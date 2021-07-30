@@ -1,0 +1,31 @@
+{
+  "name": "permafrost",
+  "version": "0.0.1",
+  "description": "Permanent storage for NFTs based on Arweave",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikiival/permafrost.git"
+  },
+  "keywords": [
+    "arweave",
+    "nft",
+    "kodadot"
+  ],
+  "author": "Viki Val <viktorko99@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vikiival/permafrost/issues"
+  },
+  "homepage": "https://github.com/vikiival/permafrost#readme",
+  "devDependencies": {
+    "@types/node": "^16.4.7",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  }
+}
