@@ -25,10 +25,10 @@ const arweave = Arweave.init({
 //   logging: false, // Enable network request logging
 // })
 
-async function main() {
+export async function search() {
   const query = gql`
     query {
-      transactions(first: 20) {
+      transactions(first: 5) {
         edges {
           node {
             id
@@ -43,7 +43,7 @@ async function main() {
   `
 
   const result = await request(ARWEAVE_GRAPHQL_URL, query);
-  console.log(result);
+  return result
 }
 
 type TagType = boolean | number | string | string[]
@@ -62,7 +62,7 @@ export async function submit(params: Record<string, TagType>, data: Buffer): Pro
   transaction.addTag('App-Name', APP_NAME);
 
   await arweave.transactions.sign(transaction, key)
-  // await arweave.transactions.post(transaction)
+  await arweave.transactions.post(transaction)
   
   return transaction
 }

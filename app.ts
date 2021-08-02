@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors'
 import multer from 'multer'
-import { submit } from './ar';
+import { submit, search } from './ar';
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -14,16 +14,19 @@ const getLocationsWithTimezones = ({ body, file }: any, response: Response) => {
 
   const meta = {
     ...body,
-    mimetype: file.mimetype
+    'Content-Type': file.mimetype
   }
-
-  console.log(file.buffer.toString());
 
   submit(meta, file.buffer).then(tx => response.status(200).json(tx));
 };
 
+const getSearch = (req: Request, response: Response) => {
+  search().then(tx => response.status(200).json(tx));
+};
 
-app.get('/test', upload.single('avatar'), getLocationsWithTimezones);
+
+app.get('/search', upload.none(), getSearch);
+app.get('/pin', upload.single('image'), getLocationsWithTimezones);
 
 app.listen(port, () => {
   console.log(`Timezones by location application is running on port ${port}.`);

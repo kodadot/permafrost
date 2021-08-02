@@ -13,9 +13,18 @@ All you need to do is just send your metadata, image and you are good to go.
  
 
 We will have three methods 
- - [x] `/api/pin`
- - [ ] `/api/validate`
- - [ ] `/api/search`
+ - [x] `/pin`
+ - [ ] `/validate`
+ - [ ] `/search`
+
+## How to run? 
+
+```bash
+npm install
+npm start
+```
+In the other terminal use 
+[ArLocal](https://github.com/textury/arlocal)
 
 ## Is this method sustainable ? 
 
