@@ -2,12 +2,13 @@ import Arweave from 'arweave'
 import TestWeave from 'testweave-sdk'
 import { request, gql } from 'graphql-request'
 import Transaction from 'arweave/node/lib/transaction'
-
-const ARWEAVE_GRAPHQL_URL = 'https://arweave.net/graphql'
-const APP_NAME = 'PermaFrost'
-// import searchQuery from './queries/search.graphql'
+import { metadataByCollectionAndIdQuery, searchQuery } from './queries'
 
 const isDEV = 1
+
+const ARWEAVE_GRAPHQL_URL = isDEV ? 'http://localhost:1984/graphql' : 'https://arweave.net/graphql'
+const APP_NAME = 'PermaFrost'
+
 
 const arSetup = isDEV
   ? {
@@ -28,47 +29,14 @@ const arSetup = isDEV
 const arweave = Arweave.init(arSetup)
 
 export async function search(appName: string = APP_NAME) {
-  const query = gql`
-    query search($appName: String!) {
-      transactions(first: 5, tags: [{ name: "App-Name", values: [$appName] }]) {
-        edges {
-          node {
-            id
-            tags {
-              name
-              value
-            }
-          }
-        }
-      }
-    }
-  `
-
+  const query = searchQuery
   const result = await request(ARWEAVE_GRAPHQL_URL, query, { appName })
   return result
 }
 
-export async function findByContract(appName: string = APP_NAME) {
-  const query = gql`
-    query {
-      transactions(
-        first: 5
-        tags: { name: "App-Name", values: ["ArweaveStats"] }
-      ) {
-        edges {
-          node {
-            id
-            tags {
-              name
-              value
-            }
-          }
-        }
-      }
-    }
-  `
-
-  const result = await request(ARWEAVE_GRAPHQL_URL, query)
+export async function findByContract(collection: string, tokenId: string) {
+  const query = metadataByCollectionAndIdQuery;
+  const result = await request(ARWEAVE_GRAPHQL_URL, query, { collection, tokenId })
   return result
 }
 
