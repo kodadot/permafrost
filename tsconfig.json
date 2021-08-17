@@ -3,6 +3,11 @@
     "module": "commonjs",
     "target": "es6",
     "rootDir": "./",
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules/@types", "@types"],
+    "allowSyntheticDefaultImports": true
+  },
+  "files": ["@types/graphql.d.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

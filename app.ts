@@ -26,7 +26,7 @@ const getSearch = (req: Request, response: Response) => {
 
 
 app.get('/search', upload.none(), getSearch);
-app.get('/pin', upload.single('image'), getLocationsWithTimezones);
+app.post('/pin', upload.single('image'), getLocationsWithTimezones);
 
 app.listen(port, () => {
   console.log(`Timezones by location application is running on port ${port}.`);

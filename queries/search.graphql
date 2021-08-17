@@ -1,0 +1,13 @@
+query search($appName: String!) {
+  transactions(first: 5, tags: [{ name: "App-Name", values: [$appName] }]) {
+    edges {
+      node {
+        id
+        tags {
+          name
+          value
+        }
+      }
+    }
+  }
+}
