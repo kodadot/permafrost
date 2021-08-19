@@ -6,9 +6,10 @@ import { metadataByCollectionAndIdQuery, searchQuery } from './queries'
 
 const isDEV = 1
 
-const ARWEAVE_GRAPHQL_URL = isDEV ? 'http://localhost:1984/graphql' : 'https://arweave.net/graphql'
+const ARWEAVE_GRAPHQL_URL = isDEV
+  ? 'http://localhost:1984/graphql'
+  : 'https://arweave.net/graphql'
 const APP_NAME = 'PermaFrost'
-
 
 const arSetup = isDEV
   ? {
@@ -35,8 +36,11 @@ export async function search(appName: string = APP_NAME) {
 }
 
 export async function findByContract(collection: string, tokenId: string) {
-  const query = metadataByCollectionAndIdQuery;
-  const result = await request(ARWEAVE_GRAPHQL_URL, query, { collection, tokenId })
+  const query = metadataByCollectionAndIdQuery
+  const result = await request(ARWEAVE_GRAPHQL_URL, query, {
+    collection,
+    tokenId,
+  })
   return result
 }
 
@@ -45,26 +49,52 @@ type TagType = boolean | number | string | string[]
 export async function submit(
   params: Record<string, TagType>,
   data: Buffer
-): Promise<Transaction> {
-  let key = await arweave.wallets.generate()
+): Promise<any> {
+  try {
+    let key = await arweave.wallets.generate()
 
-  let transaction = await arweave.createTransaction(
-    {
-      data,
-    },
-    key
-  )
+    const lastTxPromise = arweave.api.get('/tx_anchor').then(x => x.data);
 
-  Object.entries(params).forEach(([key, value]) => {
-    transaction.addTag(key, value.toString())
-  })
+    let transaction = await arweave.createTransaction({
+      data: data,
+      last_tx: await lastTxPromise,
+  }, key);
+  
+  // transaction.addTag('Content-Type', 'text/html');
 
-  transaction.addTag('App-Name', APP_NAME)
+    // let transaction = await arweave.createTransaction(
+    //   {
+    //     data: data.toString('base64'),
+    //     last_tx: await lastTxPromise,
+    //   },
+    //   key
+    // )
 
-  await arweave.transactions.sign(transaction, key)
-  await arweave.transactions.post(transaction)
+    Object.entries(params).forEach(([key, value]) => {
+      transaction.addTag(key, value.toString())
+    })
 
-  return transaction
+    transaction.addTag('App-Name', APP_NAME)
+
+    await arweave.transactions.sign(transaction, key)
+    console.log(`SIGNED`)
+    arweave.transactions.post(transaction)
+    // console.log(`Posted`)
+    // console.log(response.status)
+
+    return {
+      arweaveId: transaction.id,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      error: error.message,
+    }
+  }
+}
+
+export async function readTx(id: string) {
+  return await arweave.transactions.getData(id, {string: true, decode: true })
 }
 
 function verify(params: Record<string, TagType>) {
