@@ -3,7 +3,9 @@ import TestWeave from 'testweave-sdk'
 import { request, gql } from 'graphql-request'
 import Transaction from 'arweave/node/lib/transaction'
 import { metadataByCollectionAndIdQuery, searchQuery } from './queries'
-import { TagType } from './types'
+import { Attribute, TagType } from './types'
+import { attributesToTags, verifyGeneralTags } from './utils'
+import { type } from 'os'
 
 const isDEV = 1
 
@@ -61,21 +63,25 @@ export async function submit(
       last_tx: await lastTxPromise,
   }, key);
   
-  // transaction.addTag('Content-Type', 'text/html');
-
-    // let transaction = await arweave.createTransaction(
-    //   {
-    //     data: data.toString('base64'),
-    //     last_tx: await lastTxPromise,
-    //   },
-    //   key
-    // )
 
     Object.entries(params).forEach(([key, value]) => {
-      transaction.addTag(key, value.toString())
+      if (key === 'attributes') {
+        console.log(typeof value)
+        attributesToTags(JSON.parse(value.toString()) as Attribute[]).forEach(tag => {
+          transaction.addTag(tag.name, tag.value)
+        })
+      } else {
+        transaction.addTag(key, value.toString())
+      }
+
+      
     })
 
     transaction.addTag('App-Name', APP_NAME)
+
+
+
+    // verifyGeneralTags(transaction.tags)
 
     await arweave.transactions.sign(transaction, key)
     console.log(`SIGNED`)

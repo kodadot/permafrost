@@ -13,7 +13,7 @@ export type Attribute = {
   value: string | number
 }
 
-export type TagType = boolean | number | string | string[]
+export type TagType = boolean | number | string | string[] | Attribute[]
 
 export type OpenSeaMetadata = {
   description: string;
@@ -21,5 +21,12 @@ export type OpenSeaMetadata = {
   image?: string;
   name: string;
   attributes: Attribute[];
+}
+
+export type GeneralTags = {
+  'Content-Type': string;
+  'App-Name': string;
+  classId: string;
+  tokenId: string;
 }
 
