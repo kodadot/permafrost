@@ -4,12 +4,18 @@ import multer from 'multer'
 import { getLocationsWithTimezones, getMetadata, getSearch, getTx } from './handlers';
 
 const storage = multer.memoryStorage()
-const upload = multer({ storage })
+const limits = {
+  fieldNameSize: 255,
+  fileSize: 1000000,
+  files: 1
+}
+const upload = multer({ storage, limits })
+
 const justImage = upload.single('avatar')
 
 const app = express();
 app.use([cors(), express.json()])
-const port = 3000;
+const port = 3001;
 
 app.get('/search', upload.none(), getSearch);
 app.post('/pin', justImage, getLocationsWithTimezones);

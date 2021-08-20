@@ -3,6 +3,7 @@ import TestWeave from 'testweave-sdk'
 import { request, gql } from 'graphql-request'
 import Transaction from 'arweave/node/lib/transaction'
 import { metadataByCollectionAndIdQuery, searchQuery } from './queries'
+import { TagType } from './types'
 
 const isDEV = 1
 
@@ -17,7 +18,7 @@ const arSetup = isDEV
       port: 1984,
       protocol: 'http',
       timeout: 20000,
-      logging: false,
+      logging: true,
     }
   : {
       host: 'arweave.net', // Hostname or IP address for a Arweave host
@@ -44,7 +45,7 @@ export async function findByContract(collection: string, tokenId: string) {
   return result
 }
 
-type TagType = boolean | number | string | string[]
+
 
 export async function submit(
   params: Record<string, TagType>,
@@ -78,6 +79,7 @@ export async function submit(
 
     await arweave.transactions.sign(transaction, key)
     console.log(`SIGNED`)
+    // TODO: should await for transaction to be committed
     arweave.transactions.post(transaction)
     // console.log(`Posted`)
     // console.log(response.status)
@@ -97,13 +99,6 @@ export async function readTx(id: string) {
   return await arweave.transactions.getData(id, {string: true, decode: true })
 }
 
-function verify(params: Record<string, TagType>) {
-  const toValidate = ['name', 'contract', 'network']
-  for (const property of toValidate) {
-    if (!params[property]) {
-      throw new ReferenceError('ERROR: Not all properties')
-    }
-  }
-}
+
 
 // main()
