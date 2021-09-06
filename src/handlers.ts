@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { search, submit, findByContract, readTx } from './ar';
 import { extractQueryResult, extractQueryToMetadata } from './utils';
-import { unlink } from 'fs/promises';
+import { unlink, readFile } from 'fs/promises';
 
 export const storeMetadata = ({ body, file }: any, response: Response) => {
 
@@ -10,12 +10,11 @@ export const storeMetadata = ({ body, file }: any, response: Response) => {
     'Content-Type': file.mimetype
   }
 
-  submit(meta, file.buffer).then(tx => response.status(200).json(tx));
-  try {
-    unlink(file.path);
-  } catch (error) {
-    console.log(`UNABLE TO remove file ${error.message}`);
-  }
+  readFile(file.path)
+    .then(data => submit(meta, data))
+    .then(tx => response.status(200).json(tx))
+    .then(() => unlink(file.path))
+    .catch(err => response.status(500).json(err.message));
 };
 
 export const getSearch = (req: Request, response: Response) => {
