@@ -3,13 +3,13 @@ import cors from 'cors'
 import multer from 'multer'
 import { storeMetadata, getMetadata, getSearch, getTx } from './handlers';
 
-const storage = multer.memoryStorage()
+const storage =  'uploads/' // multer.memoryStorage()
 const limits = {
   fieldNameSize: 255,
   fileSize: 1000000,
   files: 1
 }
-const upload = multer({ storage, limits })
+const upload = multer({ dest: storage, limits })
 
 const justImage = upload.single('avatar')
 
