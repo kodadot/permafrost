@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { search, submit, findByContract, readTx } from './ar';
-import { extractQueryResult } from './utils';
+import { extractQueryResult, extractQueryToMetadata } from './utils';
 
 export const storeMetadata = ({ body, file }: any, response: Response) => {
 
@@ -18,7 +18,8 @@ export const getSearch = (req: Request, response: Response) => {
 
 export const getMetadata = (req: Request, response: Response) => {
   const { classId, id } = req.params;
-  findByContract(classId, id).then(extractQueryResult).then(tx =>  response.status(200).json(tx)); 
+  console.log(classId, id);
+  findByContract(classId, id).then(extractQueryToMetadata).then(tx =>  response.status(200).json(tx)); 
 }
 
 export const getTx = (req: Request, response: Response) => {
