@@ -38,3 +38,21 @@ query selective($collection: String!, $tokenId: String!) {
 }
 `
 
+export const metadataByTxId = gql`
+query findByTxId($transaction: ID!) {
+  transactions(
+    first: 1
+    ids: [$transaction]
+  ) {
+    edges {
+      node {
+        id
+        tags {
+          name
+          value
+        }
+      }
+    }
+  }
+}
+`

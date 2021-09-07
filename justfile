@@ -6,3 +6,6 @@ chain:
 
 up:
   yarn start
+
+whale:
+  docker run  --network="host" vikival/permafrost

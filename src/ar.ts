@@ -1,11 +1,9 @@
 import Arweave from 'arweave'
-import TestWeave from 'testweave-sdk'
-import { request, gql } from 'graphql-request'
-import Transaction from 'arweave/node/lib/transaction'
-import { metadataByCollectionAndIdQuery, searchQuery } from './queries'
+import { request } from 'graphql-request'
+import { metadataByCollectionAndIdQuery, metadataByTxId, searchQuery } from './queries'
 import { Attribute, TagType } from './types'
-import { attributesToTags, verifyGeneralTags } from './utils'
-import { type } from 'os'
+import { attributesToTags } from './utils'
+import * as wallet from './wallet.json'
 
 const isDEV = 1
 
@@ -43,6 +41,14 @@ export async function findByContract(collection: string, tokenId: string) {
   const result = await request(ARWEAVE_GRAPHQL_URL, query, {
     collection,
     tokenId,
+  })
+  return result
+}
+
+export async function findByTransactionId(transaction: string) {
+  const query = metadataByTxId
+  const result = await request(ARWEAVE_GRAPHQL_URL, query, {
+    transaction
   })
   return result
 }
@@ -105,6 +111,9 @@ export async function readTx(id: string) {
   return await arweave.transactions.getData(id, {string: true, decode: true })
 }
 
+export async function whoAmI() {
+  return await arweave.wallets.jwkToAddress(wallet)
+}
 
 
 // main()

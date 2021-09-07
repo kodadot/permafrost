@@ -8,11 +8,13 @@ ________
 Somewhere on this server there is stored wallet
 All you need to do is just send your metadata, image and you are good to go.
  
-
-We will have three methods 
- - [x] `/pin`
- - [ ] `/validate`
- - [ ] `/search`
+Current methods:
+- /search
+- /store
+- /meta/:id
+- /metadata/:classId/:id
+- /tx/:id
+- /whoami
 
 ## How to run? 
 
@@ -22,6 +24,15 @@ npm start
 ```
 In the other terminal use 
 [ArLocal](https://github.com/textury/arlocal)
+
+or use docker 
+
+```bash
+docker build . -t vikival/permafrost
+docker run -p 3000:3000 vikival/permafrost
+```
+
+> If you want to look inside the container use `docker run -it vikival/permafrost sh`
 
 ## Is this method sustainable ? 
 
