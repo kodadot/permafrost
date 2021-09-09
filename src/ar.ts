@@ -1,13 +1,13 @@
 import Arweave from 'arweave'
 import { request } from 'graphql-request'
-import { metadataByCollectionAndIdQuery, metadataByTxId, searchQuery } from './queries'
-import { Attribute, TagType } from './types'
-import { attributesToTags } from './utils'
-import * as w from './wallet.json'
 import { join } from 'path'
 import { readJSON } from 'fs-extra'
 
-const isDEV = 1
+import { metadataByCollectionAndIdQuery, metadataByTxId, searchQuery } from './queries'
+import { Attribute, TagType } from './types'
+import { attributesToTags } from './utils'
+
+const isDEV = 0
 
 const ARWEAVE_GRAPHQL_URL = isDEV
   ? 'http://localhost:1984/graphql'
@@ -55,14 +55,12 @@ export async function findByTransactionId(transaction: string) {
   return result
 }
 
-
-
 export async function submit(
   params: Record<string, TagType>,
   data: Buffer
 ): Promise<any> {
   try {
-    let key = await arweave.wallets.generate()
+    let key = await getWallet()
 
     const lastTxPromise = arweave.api.get('/tx_anchor').then(x => x.data);
 
@@ -86,17 +84,18 @@ export async function submit(
 
     transaction.addTag('App-Name', APP_NAME)
 
-
-
+    // TODO: Verify tags ;)
     // verifyGeneralTags(transaction.tags)
 
     await arweave.transactions.sign(transaction, key)
     console.log(`SIGNED`)
-    // TODO: should await for transaction to be committed
-    arweave.transactions.post(transaction)
-    // console.log(`Posted`)
-    // console.log(response.status)
 
+    if (isDEV) {
+      arweave.transactions.post(transaction)
+    } else {
+      await arweave.transactions.post(transaction)
+    }
+    
     return {
       arweaveId: transaction.id,
     }
@@ -113,7 +112,6 @@ export async function readTx(id: string) {
 }
 
 export async function whoAmI() {
-  console.log(`whoAmI`, __dirname)
   const wallet = await getWallet();
   return await arweave.wallets.jwkToAddress(wallet)
 }

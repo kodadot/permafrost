@@ -7,5 +7,11 @@ chain:
 up:
   yarn start
 
+build:
+  docker build . -t vikival/permafrost
+
 whale:
-  docker run  --network="host" vikival/permafrost
+  docker run --rm -p 3003:3003 vikival/permafrost
+
+sh:
+  docker run -it  vikival/permafrost sh
