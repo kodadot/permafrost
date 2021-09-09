@@ -3,7 +3,9 @@ import { request } from 'graphql-request'
 import { metadataByCollectionAndIdQuery, metadataByTxId, searchQuery } from './queries'
 import { Attribute, TagType } from './types'
 import { attributesToTags } from './utils'
-import * as wallet from './wallet.json'
+import * as w from './wallet.json'
+import { join } from 'path'
+import { readJSON } from 'fs-extra'
 
 const isDEV = 1
 
@@ -111,7 +113,13 @@ export async function readTx(id: string) {
 }
 
 export async function whoAmI() {
+  console.log(`whoAmI`, __dirname)
+  const wallet = await getWallet();
   return await arweave.wallets.jwkToAddress(wallet)
+}
+
+export async function getWallet() {
+  return readJSON(join(__dirname, 'wallet.json'))
 }
 
 

@@ -1,7 +1,14 @@
 import express from 'express';
 import cors from 'cors'
 import multer from 'multer'
+import { existsSync } from 'fs'
+import { join } from 'path'
 import { storeMetadata, getMetadata, getSearch, getTx, getOperatorAddress, getMetadataByTxId } from './handlers';
+
+if (!existsSync(join(__dirname, 'wallet.json'))) {
+  console.error('Please create a wallet.json file in the root directory')
+  process.exit(1)
+}
 
 const storage =  'uploads/' // multer.memoryStorage()
 const limits = {
