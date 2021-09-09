@@ -24,7 +24,9 @@ export const getSearch = (req: Request, response: Response) => {
 export const getMetadata = (req: Request, response: Response) => {
   const { classId, id } = req.params;
   console.log(classId, id);
-  findByContract(classId, id).then(extractQueryToMetadata).then(tx =>  response.status(200).json(tx)); 
+  findByContract(classId, id)
+  .then(extractQueryToMetadata)
+  .then(tx => tx.length ? response.status(200).json(tx[0]) : response.status(404).json({ message: 'Not found' }));  
 }
 
 export const getTx = (req: Request, response: Response) => {
@@ -35,7 +37,9 @@ export const getTx = (req: Request, response: Response) => {
 export const getMetadataByTxId = (req: Request, response: Response) => {
   const { id } = req.params;
   console.log(id);
-  findByTransactionId(id).then(extractQueryToMetadata).then(tx =>  response.status(200).json(tx)); 
+  findByTransactionId(id)
+  .then(extractQueryToMetadata)
+  .then(tx => tx.length ? response.status(200).json(tx[0]) : response.status(404).json({ message: 'Not found' })); 
 }
 
 export const getOperatorAddress = (req: Request, response: Response) => {

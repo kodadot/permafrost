@@ -6,7 +6,7 @@ import { storeMetadata, getMetadata, getSearch, getTx, getOperatorAddress, getMe
 const storage =  'uploads/' // multer.memoryStorage()
 const limits = {
   fieldNameSize: 255,
-  fileSize: 1000000,
+  fileSize: 10000000, // 10MB
   files: 1
 }
 const upload = multer({ dest: storage, limits })

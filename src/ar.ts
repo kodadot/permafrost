@@ -72,7 +72,6 @@ export async function submit(
 
     Object.entries(params).forEach(([key, value]) => {
       if (key === 'attributes') {
-        console.log(typeof value)
         attributesToTags(JSON.parse(value.toString()) as Attribute[]).forEach(tag => {
           transaction.addTag(tag.name, tag.value)
         })

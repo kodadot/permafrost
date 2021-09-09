@@ -9,7 +9,7 @@ export type Tag = {
 }
 
 export type Attribute = {
-  trait_type: string
+  trait_type?: string
   value: string | number
 }
 
